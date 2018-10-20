@@ -1,3 +1,6 @@
+from copy import copy
+from functools import total_ordering
+
 import numpy as np
 
 
@@ -10,6 +13,7 @@ class CellFormationProblem:
         return str(self.machines_part)
 
 
+@total_ordering
 class CFPSolution:
     def __init__(self, problem: CellFormationProblem, machines=None, parts=None):
         self.problem: CellFormationProblem = problem
@@ -44,6 +48,18 @@ class CFPSolution:
     def obj_func(self):
         zeros_in, ones_in = self.values_in
         return ones_in / (self.problem.total_ones + zeros_in)
+
+    def copy(self):
+        return copy(self)
+
+    def __copy__(self):
+        return type(self)(self.problem, self.machines.tolist(), self.parts.tolist())
+
+    def __gt__(self, other):
+        return self.obj_func > other.obj_func
+
+    def __eq__(self, other):
+        return self.obj_func == other.obj_func
 
     def __repr__(self):
         return f"{self.machines}\n{self.parts}"
