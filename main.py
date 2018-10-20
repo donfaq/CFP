@@ -1,5 +1,5 @@
 import argparse
-from CFP import CellFormationParser, CFPSolution
+from CFP import CellFormationParser, GeneralVNS, CFPSolution
 
 
 def arguments() -> argparse.Namespace:
@@ -11,7 +11,13 @@ def arguments() -> argparse.Namespace:
 if __name__ == '__main__':
     args = arguments()
     problem = CellFormationParser(args.problem_file).parse()
-    sol = CFPSolution(problem)
+
     print(problem)
+
+    sol = CFPSolution(problem)
     print(sol)
-    print(sol.obj_func)
+    print(sol.objective_function)
+
+    sol = GeneralVNS(problem).solve()
+    print(sol)
+    print(sol.objective_function)

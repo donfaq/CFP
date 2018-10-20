@@ -19,7 +19,7 @@ class CFPSolution:
         self.problem: CellFormationProblem = problem
         self.machines = machines
         self.parts = parts
-        if not self.machines or not self.parts:
+        if self.machines is None or self.parts is None:
             self.parts = np.ones(self.problem.machines_part.shape[1])
             self.machines = np.ones(self.problem.machines_part.shape[0])
 
@@ -36,8 +36,12 @@ class CFPSolution:
         return zeros, ones
 
     @property
+    def clusters(self):
+        return np.unique(np.concatenate([self.parts, self.machines]))
+
+    @property
     def is_feasible(self):
-        clusters = {c: 0 for c in np.unique([self.parts, self.machines])}
+        clusters = {c: 0 for c in self.clusters}
         for i, machine in enumerate(self.machines):
             for j, part in enumerate(self.parts):
                 if machine == part:
@@ -45,7 +49,7 @@ class CFPSolution:
         return all([clusters[c] > 1 for c in clusters])
 
     @property
-    def obj_func(self):
+    def objective_function(self):
         zeros_in, ones_in = self.values_in
         return ones_in / (self.problem.total_ones + zeros_in)
 
@@ -53,13 +57,13 @@ class CFPSolution:
         return copy(self)
 
     def __copy__(self):
-        return type(self)(self.problem, self.machines.tolist(), self.parts.tolist())
+        return type(self)(self.problem, self.machines.copy(), self.parts.copy())
 
     def __gt__(self, other):
-        return self.obj_func > other.obj_func
+        return self.objective_function > other.objective_function
 
     def __eq__(self, other):
-        return self.obj_func == other.obj_func
+        return self.objective_function == other.objective_function
 
     def __repr__(self):
         return f"{self.machines}\n{self.parts}"
