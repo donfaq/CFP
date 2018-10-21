@@ -10,7 +10,8 @@ class GeneralVNS:
     def _divide_clusters(self, solution: CFPSolution):
         res = solution.copy()
         is_feasible = False
-        while not is_feasible:
+        n = 0
+        while not is_feasible or n < 1000:
             res = solution.copy()
             new_cluster = max(res.clusters) + 1
             random_machines = np.random.choice(range(len(res.machines)),
@@ -22,16 +23,19 @@ class GeneralVNS:
                                             replace=False)
             res.parts[random_parts] = new_cluster
             is_feasible = res.is_feasible
+            n += 1
         return res
 
     def _merge_clusters(self, solution: CFPSolution):
         res = solution.copy()
         is_feasible = False
-        while not is_feasible:
+        n = 0
+        while not is_feasible or n < 1000 or len(res.clusters) > 1:
             a, b = np.random.choice(solution.clusters, 2, replace=False).tolist()
             res.machines[res.machines == b] = a
             res.parts[res.parts == b] = a
             is_feasible = res.is_feasible
+            n += 1
         return res
 
     def _swap_machines(self, sol: CFPSolution):
