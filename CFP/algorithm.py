@@ -56,10 +56,9 @@ class GeneralVNS:
         shaking_functions = [self._divide_clusters, self._merge_clusters]
         vnd_functions = [self._swap_parts, self._swap_machines]
         best_sol = CFPSolution(self.problem)
-        updated = True
-        while updated:
-            updated = False
-
+        not_upd = 0
+        while not_upd <= 10:
+            not_upd += 1
             k = 0
             while k < len(shaking_functions):
                 new_sol = shaking_functions[k](best_sol.copy())
@@ -73,7 +72,7 @@ class GeneralVNS:
                 k += 1
                 if new_sol > best_sol:
                     best_sol = new_sol
-                    updated = True
+                    not_upd = 0
                     k = 0
                     print(best_sol, '\n', best_sol.objective_function)
         return best_sol
