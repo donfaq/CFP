@@ -1,4 +1,6 @@
 import argparse
+import os
+
 from CFP import CellFormationParser, GeneralVNS, CFPSolution
 
 
@@ -17,7 +19,8 @@ if __name__ == '__main__':
     sol = CFPSolution(problem)
     print(sol)
     print(sol.objective_function)
-
     sol = GeneralVNS(problem).solve()
-    print(sol)
-    print(sol.objective_function)
+    if not os.path.exists('results/'):
+        os.mkdir('results')
+    with open(f"results/{os.path.basename(args.problem_file).split('.')[0]}.sol", "w") as f:
+        f.write(str(sol))

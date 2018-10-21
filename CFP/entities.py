@@ -66,4 +66,7 @@ class CFPSolution:
         return self.objective_function == other.objective_function
 
     def __repr__(self):
-        return f"{self.machines}\n{self.parts}"
+        return "{}\n{}".format(
+            ' '.join(map(str, self.machines.astype(np.int))),
+            ' '.join(map(str, self.parts.astype(np.int)))
+        )
